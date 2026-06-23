@@ -117,7 +117,7 @@ export default function PaymentSimulator({ merchants, onAddTransaction, onNaviga
           <Sparkles className="w-3.5 h-3.5" />
           <span>Interactive Sandbox Terminal</span>
         </span>
-        <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">UPI Payment Checkout Sandbox</h2>
+        <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">AARAV PAY Secure UPI Checkout Sandbox</h2>
         <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
           Test dynamic merchant QR code sweeps, customer collect authorizations, intents, and AI risk engines in a secure playground environment.
         </p>

@@ -56,36 +56,36 @@ export default function LandingPage({ onNavigate, isDarkMode }: LandingPageProps
   };
 
   const codeSnippets = {
-    curl: `curl -X POST https://api.upigateway.in/v1/payments/create \\
+    curl: `curl -X POST https://api.aaravpay.com/v1/payments/create \\
   -H "Authorization: Bearer pk_live_51Msk72H..." \\
   -H "Content-Type: application/json" \\
   -d '{
     "amount": ${demoAmount}.00,
     "currency": "INR",
-    "upi_id": "merchant@upibank",
+    "upi_id": "merchant@aaravpay",
     "customer_name": "Rita Roy",
     "callback_url": "https://callback.yoursite.com"
   }'`,
-    node: `const UPIGateway = require('upi-payment-gateway');
-const gateway = new UPIGateway({ apiKey: 'pk_live_51Msk72H...' });
+    node: `const AaravPay = require('aaravpay-sdk');
+const gateway = new AaravPay({ apiKey: 'pk_live_51Msk72H...' });
 
 const payment = await gateway.payments.create({
   amount: parseFloat('${demoAmount}.00'),
   currency: 'INR',
-  upiId: 'merchant@upibank',
+  upiId: 'merchant@aaravpay',
   customerName: 'Rita Roy',
   callbackUrl: 'https://callback.yoursite.com'
 });
 
 console.log(\`Dynamic QR: \${payment.qr_string}\`);`,
-    python: `import upi_gateway
+    python: `import aaravpay
 
-client = upi_gateway.Client(api_key='pk_live_51Msk72H...')
+client = aaravpay.Client(api_key='pk_live_51Msk72H...')
 
 payment = client.payments.create(
     amount=${demoAmount}.00,
     currency='INR',
-    upi_id='merchant@upibank',
+    upi_id='merchant@aaravpay',
     customer_name='Rita Roy',
     callback_url='https://callback.yoursite.com'
 )
@@ -189,13 +189,13 @@ print(f"Checkout URL: {payment.checkout_url}")`
 
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-none text-slate-900 dark:text-white">
               Fast, Secure & Instant <br className="hidden md:inline" />
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent">
-                UPI Payments
+              <span className="bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 bg-clip-text text-transparent">
+                AARAV PAY
               </span>
             </h1>
 
             <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
-              Accept payments, manage settlements on the fly, and supercharge your business with India's most developer-friendly, zero-downtime, and AI-fortified UPI Payment Gateway.
+              Accept merchant UPI payments, initiate deep-linked payouts, and process automated bank settlements with India's most developer-friendly payment platform.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -460,6 +460,250 @@ print(f"Checkout URL: {payment.checkout_url}")`
         </div>
       </section>
 
+      {/* ------------------ ARCHITECTURE & SAAS ROADMAP ------------------ */}
+      <section className="py-20 bg-slate-50/50 dark:bg-slate-950/20 border-y border-slate-100 dark:border-slate-900/50 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 space-y-24">
+          
+          {/* Step 1: Merchant Journey */}
+          <div className="space-y-12">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full">
+                The Merchant Experience
+              </span>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white">
+                The Core Merchant Journey Blueprint
+              </h2>
+              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+                A streamlined, automated SaaS onboarding flow that guarantees rapid merchant activation and secure transactions.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6 relative">
+              {[
+                { step: '01', title: 'Create Account', desc: 'SaaS Signup is instant; promoters instantly register basic admin details.' },
+                { step: '02', title: 'Complete KYC', desc: 'Real-time corporate PAN check, GST matching, and instant penny-drop bank link.' },
+                { step: '03', title: 'Connect Provider', desc: 'Select any licensed aggregator (Razorpay, Cashfree, PhonePe) to route payments.' },
+                { step: '04', title: 'Go Live / Collect', desc: 'Instantly accept UPI payments using dynamic QR displays or payment links.' },
+                { step: '05', title: 'Auto Sweep', desc: 'Receive webhooks and generate payouts straight into linked nodes.' },
+              ].map((item, idx) => (
+                <div key={idx} className="bg-white dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 space-y-4 hover:border-indigo-500/45 dark:hover:border-indigo-500/45 transition">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-extrabold text-xs">
+                    {item.step}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 dark:text-white text-sm">{item.title}</h4>
+                    <p className="text-[11px] text-slate-450 mt-1 pb-1 leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Step 2: Architecture Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            <div className="space-y-6">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+                AARAV PAY SaaS Engine
+              </span>
+              <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-tight">
+                Modern Resilient Multi-Provider API Architecture
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                AARAV PAY functions as an exquisite control center for merchant analytics, custom payment interfaces, dynamic billing QR codes, and API webhooks. 
+                Rather than carrying out banking processing natively, request traffic is automated and securely dispatched via high-performance authorized payment providers.
+              </p>
+
+              <div className="space-y-4 text-xs">
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-4.5 h-4.5 text-indigo-500 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-slate-800 dark:text-slate-200">Merchant Web Dashboard Control:</strong>
+                    <span className="text-slate-500 dark:text-slate-400 block mt-0.5 mt-0.5">Full control over payment APIs, API keys, dynamic QR builders, and accounting metrics.</span>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-4.5 h-4.5 text-indigo-500 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-slate-800 dark:text-slate-200">Dynamic Gateway API Router:</strong>
+                    <span className="text-slate-500 dark:text-slate-400 block mt-0.5">Intelligent failover algorithms dispatching intents immediately across Razorpay / Cashfree / PhonePe based on active uptime indices.</span>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-4.5 h-4.5 text-indigo-500 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-slate-800 dark:text-slate-200">Webhook Sweep Integration:</strong>
+                    <span className="text-slate-500 dark:text-slate-400 block mt-0.5">Captures payload endpoints immediately on successful status updates, executing instant merchant ledger logging.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Architecture Graphic Visualizer */}
+            <div className="bg-white dark:bg-slate-900/60 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 space-y-4">
+              <div className="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800/60 pb-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] font-mono tracking-widest uppercase text-slate-500">Live Traffic Routing Web Graph</span>
+              </div>
+
+              <div className="space-y-3 font-mono text-[9px]">
+                
+                {/* Visual Nodes */}
+                <div className="p-3 bg-slate-50 dark:bg-slate-950/40 rounded-xl border border-slate-150 dark:border-slate-900 flex items-center justify-between">
+                  <div className="text-slate-700 dark:text-slate-350">1. Customer UPI App (GPay/PhonePe...)</div>
+                  <span className="text-indigo-500 text-[8px] font-bold">INITIATES TRANSACTION</span>
+                </div>
+
+                <div className="flex justify-center my-1 text-slate-400 text-xs">⬇</div>
+
+                <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 flex items-center justify-between">
+                  <div className="text-indigo-600 dark:text-indigo-300 font-bold">2. AARAV PAY Checkout Engine</div>
+                  <span className="text-indigo-500 text-[8px] font-bold">API KEY RULES CHECK &amp; RISK LEVEL</span>
+                </div>
+
+                <div className="flex justify-center my-1 text-slate-400 text-xs">⬇</div>
+
+                {/* Split routing block */}
+                <div className="p-3.5 bg-slate-50 dark:bg-slate-950/40 rounded-xl border border-slate-150 dark:border-slate-900 space-y-2">
+                  <div className="text-slate-500 text-[8px] uppercase font-bold tracking-wider">3. Automated Route Dispatch (Aggregators)</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="p-2 border border-blue-500/30 bg-blue-500/5 text-blue-500 rounded text-center font-bold">
+                      Razorpay Node
+                    </div>
+                    <div className="p-2 border border-purple-500/30 bg-purple-500/5 text-purple-500 rounded text-center font-bold">
+                      Cashfree Node
+                    </div>
+                    <div className="p-2 border border-indigo-500/35 bg-indigo-500/5 text-indigo-500 rounded text-center">
+                      PhonePe API
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-center my-1 text-slate-400 text-xs">⬇</div>
+
+                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-150 dark:border-slate-800 flex items-center justify-between">
+                  <div className="text-slate-700 dark:text-slate-350">4. UPI UPI Core (NPCI Node Router)</div>
+                  <span className="text-emerald-500 text-[8px] font-bold">SUCCESSIVE WEBHOOK PUSH</span>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+
+          {/* Step 3: Database Evolution Roadmap */}
+          <div className="space-y-12">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full">
+                SaaS Schema Scaling
+              </span>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white">
+                Database Evolution Roadmap
+              </h2>
+              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+                Scaling out database tables in phases to transition from robust startups to global enterprise platforms.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              
+              {/* Phase 1 */}
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-indigo-500/20 relative space-y-6">
+                <span className="absolute -top-3 left-4 bg-indigo-600 text-white font-mono text-[9px] font-black uppercase px-2.5 py-1 rounded-full">
+                  Phase 1 (MVP Sandbox)
+                </span>
+                
+                <div className="space-y-2 mt-2">
+                  <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">Core Ledger Tables</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Designed strictly around instant business launch and reliable payment validation rules.
+                  </p>
+                </div>
+
+                <ul className="space-y-2.5 font-mono text-[10px] text-slate-750 dark:text-slate-350">
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-indigo-500">
+                    <strong>User:</strong> Promoter identity profile records.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-indigo-500">
+                    <strong>Merchant:</strong> Active corporate parameters &amp; bank routes.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-indigo-500">
+                    <strong>Transaction:</strong> Payment IDs, customer details, risk metrics.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-indigo-500">
+                    <strong>Settlement:</strong> Requested withdrawals &amp; bank UTR receipts.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-indigo-500">
+                    <strong>ApiKey / Webhook:</strong> API token records &amp; callbacks.
+                  </li>
+                </ul>
+              </div>
+
+              {/* Phase 2 */}
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 space-y-6">
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono text-[9px] font-black uppercase px-2.5 py-1 rounded-full inline-block">
+                  Phase 2 (Growth)
+                </span>
+
+                <div className="space-y-2">
+                  <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">Multi-Aquirer Credentials</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Unlocks autonomous merchant-specific credentials for advanced API integrations.
+                  </p>
+                </div>
+
+                <ul className="space-y-2.5 font-mono text-[10px] text-slate-750 dark:text-slate-350">
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-slate-300 dark:border-slate-700">
+                    <strong>PaymentProvider:</strong> Dynamic multi-bank routing list.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-slate-300 dark:border-slate-700">
+                    <strong>ProviderCredential:</strong> API secret storage for aggregators.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-slate-300 dark:border-slate-700">
+                    <strong>PaymentLink:</strong> Dynamic expires parameters, custom redirects.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-slate-300 dark:border-slate-700">
+                    <strong>Subscription:</strong> SaaS plan tracking (pro / free / scale checks).
+                  </li>
+                </ul>
+              </div>
+
+              {/* Phase 3 */}
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 space-y-6">
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono text-[9px] font-black uppercase px-2.5 py-1 rounded-full inline-block">
+                  Phase 3 (Enterprise Grid)
+                </span>
+
+                <div className="space-y-2">
+                  <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">White-Label &amp; Routing Splits</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Engineered to handle automated ledger splits and custom branded checkout routes.
+                  </p>
+                </div>
+
+                <ul className="space-y-2.5 font-mono text-[10px] text-slate-750 dark:text-slate-350">
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-slate-300 dark:border-slate-700">
+                    <strong>MerchantTheme:</strong> Complete white-label interface custom settings.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-slate-300 dark:border-slate-700">
+                    <strong>LedgerEntry:</strong> Detailed internal double-entry accounting records.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-slate-300 dark:border-slate-700">
+                    <strong>SplitConfig:</strong> Split payments mapping, seller marketplace commissions.
+                  </li>
+                  <li className="flex items-center space-x-2 pl-1 border-l-2 border-slate-300 dark:border-slate-700">
+                    <strong>AiRiskEngineLog:</strong> Predictive neural threat vector logs.
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       {/* ------------------ PRICING SECTION ------------------ */}
       <section className="py-20 relative">
         <div className="max-w-7xl mx-auto px-6">
@@ -644,7 +888,7 @@ print(f"Checkout URL: {payment.checkout_url}")`
                     <CheckCircle className="w-4 h-4 text-cyan-400 shrink-0" />
                     <div>
                       <div className="text-xs font-bold">Email Support Ticket</div>
-                      <div className="text-[11px] text-slate-400">help@upigateway.in</div>
+                      <div className="text-[11px] text-slate-400">support@aaravpay.com</div>
                     </div>
                   </div>
 
@@ -679,10 +923,10 @@ print(f"Checkout URL: {payment.checkout_url}")`
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onNavigate('home')}>
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white font-extrabold text-sm shadow-md">
-              UPI
+              AP
             </div>
             <span className="font-extrabold text-base tracking-tight text-slate-800 dark:text-white">
-              UPI Gateway
+              AARAV PAY
             </span>
           </div>
 
@@ -694,7 +938,7 @@ print(f"Checkout URL: {payment.checkout_url}")`
           </div>
 
           <p className="text-[11px] text-slate-450 dark:text-slate-500 text-center md:text-right">
-            &copy; 2026 UPI Payment Gateway &amp; Admin Panel. Built with premium Fintech standards. All rights reserved.
+            &copy; 2026 AARAV PAY Enterprise. Built with premium Fintech standards. All rights reserved.
           </p>
         </div>
       </footer>

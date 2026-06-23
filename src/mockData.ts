@@ -25,6 +25,12 @@ export const INITIAL_MERCHANTS: Merchant[] = [
     createdAt: getDateHoursAgo(360), // 15 days ago
     kycSubmitted: true,
     kycApprovedAt: getDateHoursAgo(350),
+    plan: 'Business',
+    selectedProvider: 'Razorpay',
+    twoFactorEnabled: true,
+    panVerified: true,
+    gstVerified: true,
+    bankVerified: true,
   },
   {
     id: 'mer_02',
@@ -44,6 +50,12 @@ export const INITIAL_MERCHANTS: Merchant[] = [
     createdAt: getDateHoursAgo(240), // 10 days ago
     kycSubmitted: true,
     kycApprovedAt: getDateHoursAgo(230),
+    plan: 'Starter',
+    selectedProvider: 'PhonePe',
+    twoFactorEnabled: false,
+    panVerified: true,
+    gstVerified: true,
+    bankVerified: true,
   },
   {
     id: 'mer_03',
@@ -63,6 +75,12 @@ export const INITIAL_MERCHANTS: Merchant[] = [
     createdAt: getDateHoursAgo(12), // 12 hours ago
     kycSubmitted: true,
     kycApprovedAt: null,
+    plan: 'Enterprise',
+    selectedProvider: 'None',
+    twoFactorEnabled: true,
+    panVerified: false,
+    gstVerified: false,
+    bankVerified: false,
   },
   {
     id: 'mer_04',
@@ -82,6 +100,12 @@ export const INITIAL_MERCHANTS: Merchant[] = [
     createdAt: getDateHoursAgo(480), // 20 days ago
     kycSubmitted: true,
     kycApprovedAt: getDateHoursAgo(470),
+    plan: 'Business',
+    selectedProvider: 'Cashfree',
+    twoFactorEnabled: true,
+    panVerified: true,
+    gstVerified: true,
+    bankVerified: true,
   },
 ];
 

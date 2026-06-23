@@ -7,26 +7,69 @@
     <script>
       (function() {
         var errorHandler = function(e) {
-          var msg = e.message || '';
-          if (
-            msg.indexOf('Script error') > -1 ||
-            msg.indexOf('ResizeObserver') > -1
-          ) {
-            e.stopImmediatePropagation();
-            e.preventDefault();
-            return true;
-          }
+          try {
+            var msg = '';
+            if (e) {
+              if (typeof e.message === 'string') {
+                msg = e.message;
+              } else if (e.error && typeof e.error.message === 'string') {
+                msg = e.error.message;
+              } else {
+                msg = String(e.message || (e.error && e.error.message) || '');
+              }
+            }
+            if (
+              msg.indexOf('Script error') > -1 ||
+              msg.indexOf('ResizeObserver') > -1 ||
+              msg.indexOf('Script ...') > -1 ||
+              !msg ||
+              msg === 'Script error.'
+            ) {
+              if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+              if (e && e.preventDefault) e.preventDefault();
+              return true;
+            }
+          } catch (err) {}
         };
         window.addEventListener('error', errorHandler, true);
         window.onerror = function(message, source, lineno, colno, error) {
-          var msg = message || '';
-          if (
-            msg.indexOf('Script error') > -1 ||
-            msg.indexOf('ResizeObserver') > -1
-          ) {
-            return true;
-          }
+          try {
+            var msg = typeof message === 'string' ? message : String(message || '');
+            if (
+              msg.indexOf('Script error') > -1 ||
+              msg.indexOf('ResizeObserver') > -1 ||
+              msg.indexOf('Script ...') > -1 ||
+              !msg ||
+              msg === 'Script error.'
+            ) {
+              return true;
+            }
+          } catch (err) {}
         };
+        window.addEventListener('unhandledrejection', function(e) {
+          try {
+            var msg = '';
+            if (e && e.reason) {
+              if (typeof e.reason === 'string') {
+                msg = e.reason;
+              } else if (typeof e.reason.message === 'string') {
+                msg = e.reason.message;
+              } else {
+                msg = String(e.reason || '');
+              }
+            }
+            if (
+              msg.indexOf('Script error') > -1 ||
+              msg.indexOf('ResizeObserver') > -1 ||
+              msg.indexOf('ResizeObserver loop') > -1 ||
+              !msg ||
+              msg === 'Script error.'
+            ) {
+              if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+              if (e && e.preventDefault) e.preventDefault();
+            }
+          } catch (err) {}
+        });
       })();
     </script>
   </head>

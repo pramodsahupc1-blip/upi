@@ -304,11 +304,11 @@ export default function App() {
             onClick={() => setNavView('home')}
           >
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-500 flex items-center justify-center text-white font-extrabold text-sm shadow-md shadow-indigo-500/15">
-              UPI
+              AP
             </div>
             <div>
-              <span className="font-black text-slate-950 dark:text-white tracking-tight text-md">
-                UPI Gateway
+              <span className="font-black tracking-wider text-slate-950 dark:text-white text-base">
+                AARAV <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">PAY</span>
               </span>
               <span className="hidden sm:inline-block ml-2 text-[10px] font-bold uppercase py-0.5 px-2 bg-gradient-to-r from-teal-500/10 to-indigo-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 rounded-full">
                 MDR 0% Sandbox

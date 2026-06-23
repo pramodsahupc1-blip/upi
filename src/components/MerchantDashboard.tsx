@@ -70,6 +70,7 @@ export default function MerchantDashboard({
   const [webhookUrlInput, setWebhookUrlInput] = useState<string>(merchant.webhookUrl);
   const [upiIdInput, setUpiIdInput] = useState<string>(merchant.upiId);
   const [apiSuccessMessage, setApiSuccessMessage] = useState<string>('');
+  const [verifyingField, setVerifyingField] = useState<string | null>(null);
 
   // Filter transactions owned by this merchant
   const myTransactions = useMemo(() => {
@@ -223,7 +224,7 @@ export default function MerchantDashboard({
             className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer"
           >
             <CloudLightning className="w-3.5 h-3.5" />
-            <span>Launch Payment Gateway Simulator</span>
+            <span>Launch AARAV PAY Sandbox Simulator</span>
           </button>
 
           <button
@@ -795,74 +796,307 @@ export default function MerchantDashboard({
 
       {/* -------------------- SETTINGS VIEW -------------------- */}
       {activeTab === 'settings' && (
-        <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 shadow-xs max-w-2xl">
-          <div className="border-b border-slate-100 dark:border-slate-900 pb-3 mb-6">
-            <h3 className="font-bold text-slate-900 dark:text-white">Business Account Settings</h3>
-            <p className="text-[10px] text-slate-450 mt-0.5">Manage your registered bank nodes, PAN/GST records, and payout security.</p>
+        <div className="space-y-8 animate-fade-in max-w-6xl">
+          
+          {/* Header */}
+          <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 shadow-xs">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <Settings className="w-5 h-5 text-indigo-500" />
+              <span>AARAV PAY Merchant Operations Console</span>
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+              Configure your SaaS billing level, verify legal entity credentials (KYC/KYB), connect with licensed payment processing aggregators, and manage linked bank settlement routing nodes.
+            </p>
           </div>
 
-          <div className="space-y-6 text-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Business Entity Name</span>
-                <strong className="block text-slate-800 dark:text-slate-200 mt-1">{merchant.businessName}</strong>
+            {/* Left Hand: SaaS & Provider Configuration */}
+            <div className="lg:col-span-7 space-y-8">
+              
+              {/* SaaS Subscription Plans Grid */}
+              <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-900 pb-3">
+                  <div>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center space-x-2">
+                      <Sparkles className="w-4 h-4 text-purple-500" />
+                      <span>SaaS Subscription Level</span>
+                    </h4>
+                    <p className="text-[10px] text-slate-450 mt-0.5">MDR transaction fees automatically adjust live based on your subscription tier.</p>
+                  </div>
+                  <span className="text-[10px] font-mono font-extrabold uppercase bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-full">
+                    Active Plan: {merchant.plan || 'Starter'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {[
+                    { key: 'Starter', label: 'Starter Level', cost: '₹0/mo', mdr: '1.2% Fee', target: 'Small Stores', desc: 'QR + basic reporting.' },
+                    { key: 'Business', label: 'Business Pro', cost: '₹1,499/mo', mdr: '0.8% Fee', target: 'Growing Co', desc: 'API Access, Custom Webhooks.' },
+                    { key: 'Enterprise', label: 'Enterprise Elite', cost: 'Custom Price', mdr: '0.25% Fee', target: 'Large Scale', desc: 'Dedicated node, T+0 settlements.' }
+                  ].map((tier) => {
+                    const isCurrent = (merchant.plan || 'Starter') === tier.key;
+                    return (
+                      <div 
+                        key={tier.key}
+                        className={`p-4 rounded-xl border transition-all text-left relative flex flex-col justify-between ${
+                          isCurrent 
+                            ? 'bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border-indigo-500 dark:border-indigo-400 shadow-xs' 
+                            : 'bg-slate-50/40 dark:bg-white/[0.01] border-slate-150 dark:border-slate-850 hover:border-slate-300 dark:hover:border-slate-700'
+                        }`}
+                      >
+                        {isCurrent && (
+                          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-500" />
+                        )}
+                        <div>
+                          <div className="text-xs font-bold text-slate-900 dark:text-white">{tier.label}</div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">{tier.target}</div>
+                          <div className="mt-3">
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-100">{tier.cost}</span>
+                            <span className="block text-[10px] font-bold text-indigo-500 dark:text-indigo-400">{tier.mdr}</span>
+                          </div>
+                          <p className="text-[9px] text-slate-450 mt-2 leading-relaxed">{tier.desc}</p>
+                        </div>
+
+                        <button
+                          type="button"
+                          disabled={isCurrent}
+                          onClick={() => onUpdateMerchantSettings({ plan: tier.key as any })}
+                          className={`mt-4 w-full py-1.5 rounded-lg text-[10px] font-bold transition ${
+                            isCurrent 
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 cursor-default'
+                              : 'bg-slate-950 text-white dark:bg-white dark:text-black hover:opacity-90 cursor-pointer'
+                          }`}
+                        >
+                          {isCurrent ? 'Current Tier' : 'Select Plan'}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div>
-                <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Promoter Name</span>
-                <strong className="block text-slate-800 dark:text-slate-200 mt-1">{merchant.ownerName}</strong>
+              {/* Payment Processing Providers - Step 3 */}
+              <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 shadow-xs space-y-4">
+                <div>
+                  <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center space-x-2">
+                    <CloudLightning className="w-4 h-4 text-cyan-400" />
+                    <span>UPI Multi-Aquirer Provider Connectivity</span>
+                  </h4>
+                  <p className="text-[10px] text-slate-450 mt-0.5">
+                    Connect an authorized aggregator backened node to authorize live customer sweeps. Transactions dynamically route via active provider API gateways.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    { id: 'Razorpay', mdr: '0.8%', uptime: '99.98%', color: 'from-blue-600 to-cyan-500', logo: 'https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=120&auto=format&fit=crop' },
+                    { id: 'Cashfree', mdr: '0.8%', uptime: '99.95%', color: 'from-blue-600 to-indigo-600', logo: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=120&auto=format&fit=crop' },
+                    { id: 'PhonePe', mdr: '0%', uptime: '99.99%', color: 'from-purple-600 to-indigo-500', logo: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?q=80&w=120&auto=format&fit=crop' },
+                    { id: 'Paytm', mdr: '0%', uptime: '99.91%', color: 'from-cyan-600 to-blue-500', logo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=120&auto=format&fit=crop' }
+                  ].map((prov) => {
+                    const isConnected = merchant.selectedProvider === prov.id;
+                    return (
+                      <div 
+                        key={prov.id}
+                        className={`p-4 rounded-xl border flex items-center justify-between transition-all ${
+                          isConnected 
+                            ? 'bg-slate-900/10 dark:bg-white/[0.02] border-cyan-500 dark:border-cyan-400 shadow-md' 
+                            : 'bg-slate-50/20 dark:bg-white/[0.01] border-slate-150 dark:border-slate-850 hover:border-slate-250 dark:hover:border-slate-750'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-8 h-8 rounded-lg bg-gradient-to-tr ${prov.color} flex items-center justify-center text-white text-[10px] font-black italic`}>
+                            {prov.id[0]}
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-slate-850 dark:text-slate-100">{prov.id} API</div>
+                            <div className="text-[9px] text-slate-450">Uptime: <span className="font-bold text-emerald-500">{prov.uptime}</span></div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onUpdateMerchantSettings({ selectedProvider: isConnected ? 'None' : (prov.id as any) });
+                          }}
+                          className={`px-3 py-1 rounded-lg text-[9px] font-extrabold tracking-wide uppercase transition cursor-pointer ${
+                            isConnected 
+                              ? 'bg-cyan-500 text-white shadow-xs' 
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-450 hover:bg-slate-200'
+                          }`}
+                        >
+                          {isConnected ? 'Connected' : 'Connect'}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div>
-                <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Mobile Contact</span>
-                <strong className="block text-slate-800 dark:text-slate-200 mt-1">+91 {merchant.mobile}</strong>
-              </div>
-
-              <div>
-                <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Billing Email</span>
-                <strong className="block text-slate-800 dark:text-slate-200 mt-1">{merchant.email}</strong>
-              </div>
-
-              <div>
-                <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">GSTIN Profile</span>
-                <strong className="block text-slate-800 dark:text-slate-200 mt-1 font-mono uppercase">{merchant.gstNumber || 'VERIFIED_MICRO'}</strong>
-              </div>
-
-              <div>
-                <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">PAN Number</span>
-                <strong className="block text-slate-800 dark:text-slate-200 mt-1 font-mono uppercase">{merchant.panNumber}</strong>
-              </div>
             </div>
 
-            <div className="h-px bg-slate-100 dark:bg-slate-900" />
 
-            <div>
-              <span className="block text-[11px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2.5">Saved Bank Settlement Node</span>
-              <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-150 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <span className="block text-[9px] text-slate-450 dark:text-slate-500 uppercase">Bank Name</span>
-                  <strong className="text-slate-800 dark:text-slate-200 text-xs">{merchant.bankName}</strong>
+            {/* Right Hand: Actionable KYC Audit Room */}
+            <div className="lg:col-span-5 space-y-8">
+              
+              {/* KYC Review Center */}
+              <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-900 pb-3">
+                  <div>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-emerald-500" />
+                      <span>Legal Entity KYC Audit Suite</span>
+                    </h4>
+                    <p className="text-[10px] text-slate-450 mt-0.5">Verification required by RBI/NPCI guidelines before settlements.</p>
+                  </div>
                 </div>
-                <div>
-                  <span className="block text-[9px] text-slate-450 dark:text-slate-500 uppercase">Account Number</span>
-                  <strong className="text-slate-800 dark:text-slate-200 text-xs text-slate-700 dark:text-slate-350 font-mono">••••••••{merchant.bankAccount?.slice(-4) || '5019'}</strong>
-                </div>
-                <div>
-                  <span className="block text-[9px] text-slate-450 dark:text-slate-500 uppercase">IFSC Code Node</span>
-                  <strong className="text-slate-800 dark:text-slate-200 text-xs font-mono">{merchant.ifscCode}</strong>
+
+                <div className="space-y-3">
+                  
+                  {/* PAN Verification */}
+                  <div className="p-3.5 bg-slate-50 dark:bg-white/[0.01] rounded-xl border border-slate-150 dark:border-slate-850 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-250 flex items-center space-x-1.5">
+                        <span>PAN Card Identity Match</span>
+                        {merchant.panVerified ? (
+                          <span className="text-[8px] bg-emerald-500/10 text-emerald-500 font-extrabold px-1.5 py-0.5 rounded uppercase">VERIFIED</span>
+                        ) : (
+                          <span className="text-[8px] bg-amber-500/10 text-amber-500 font-extrabold px-1.5 py-0.5 rounded uppercase">PENDING ACTION</span>
+                        )}
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-400 select-all block mt-0.5">{merchant.panNumber} - Promoter</span>
+                    </div>
+
+                    {!merchant.panVerified ? (
+                      <button
+                        type="button"
+                        disabled={verifyingField !== null}
+                        onClick={() => {
+                          setVerifyingField('pan');
+                          setTimeout(() => {
+                            setVerifyingField(null);
+                            onUpdateMerchantSettings({ panVerified: true });
+                          }, 1000);
+                        }}
+                        className="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-indigo-600 text-white rounded-md cursor-pointer hover:bg-indigo-500"
+                      >
+                        {verifyingField === 'pan' ? 'Verifying...' : 'Auto Verify'}
+                      </button>
+                    ) : (
+                      <CheckCircle className="w-5 h-5 text-emerald-500" />
+                    )}
+                  </div>
+
+                  {/* GSTIN Verification */}
+                  <div className="p-3.5 bg-slate-50 dark:bg-white/[0.01] rounded-xl border border-slate-150 dark:border-slate-850 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-250 flex items-center space-x-1.5">
+                        <span>GST Tax Registration</span>
+                        {merchant.gstVerified ? (
+                          <span className="text-[8px] bg-emerald-500/10 text-emerald-500 font-extrabold px-1.5 py-0.5 rounded uppercase">VERIFIED</span>
+                        ) : (
+                          <span className="text-[8px] bg-amber-500/10 text-amber-500 font-extrabold px-1.5 py-0.5 rounded uppercase">PENDING ACTION</span>
+                        )}
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-400 select-all block mt-0.5">{merchant.gstNumber || 'GST0982XXXXXXXX'} - Entity</span>
+                    </div>
+
+                    {!merchant.gstVerified ? (
+                      <button
+                        type="button"
+                        disabled={verifyingField !== null}
+                        onClick={() => {
+                          setVerifyingField('gst');
+                          setTimeout(() => {
+                            setVerifyingField(null);
+                            onUpdateMerchantSettings({ gstVerified: true });
+                          }, 1000);
+                        }}
+                        className="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-indigo-600 text-white rounded-md cursor-pointer hover:bg-indigo-500"
+                      >
+                        {verifyingField === 'gst' ? 'Verifying...' : 'Verify Live'}
+                      </button>
+                    ) : (
+                      <CheckCircle className="w-5 h-5 text-emerald-500" />
+                    )}
+                  </div>
+
+                  {/* Bank Node Verification */}
+                  <div className="p-3.5 bg-slate-50 dark:bg-white/[0.01] rounded-xl border border-slate-150 dark:border-slate-850 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-250 flex items-center space-x-1.5">
+                        <span>Bank Node Penny-Drop Check</span>
+                        {merchant.bankVerified ? (
+                          <span className="text-[8px] bg-emerald-500/10 text-emerald-500 font-extrabold px-1.5 py-0.5 rounded uppercase">LINKED &amp; COMPLIANT</span>
+                        ) : (
+                          <span className="text-[8px] bg-amber-500/10 text-amber-500 font-extrabold px-1.5 py-0.5 rounded uppercase">REQUIRES VALIDATION</span>
+                        )}
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-400 block mt-0.5">{merchant.bankName} Account: ••••••••{merchant.bankAccount?.slice(-4) || '5019'}</span>
+                    </div>
+
+                    {!merchant.bankVerified ? (
+                      <button
+                        type="button"
+                        disabled={verifyingField !== null}
+                        onClick={() => {
+                          setVerifyingField('bank');
+                          setTimeout(() => {
+                            setVerifyingField(null);
+                            onUpdateMerchantSettings({ bankVerified: true });
+                          }, 1200);
+                        }}
+                        className="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-indigo-600 text-white rounded-md cursor-pointer hover:bg-indigo-500"
+                      >
+                        {verifyingField === 'bank' ? 'Dropping ₹1.00...' : 'Penny-drop Sync'}
+                      </button>
+                    ) : (
+                      <CheckCircle className="w-5 h-5 text-emerald-500" />
+                    )}
+                  </div>
+
                 </div>
               </div>
-            </div>
 
-            <div className="h-px bg-slate-100 dark:bg-slate-900" />
 
-            <div className="p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/10 text-[10px] text-slate-500 dark:text-slate-400 flex items-start space-x-2.5 leading-relaxed">
-              <Sparkles className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
-              <span>To modify corporate account variables or update linked corporate nodes, trigger an administration service call by writing directly to our help desk <strong className="font-bold text-slate-700 dark:text-slate-300">support@upigateway.in</strong>.</span>
+              {/* Original Account details */}
+              <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 shadow-xs space-y-4">
+                <div className="border-b border-slate-100 dark:border-slate-900 pb-3">
+                  <h4 className="font-bold text-sm text-slate-900 dark:text-white">Profile Node Registry</h4>
+                </div>
+
+                <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-xs">
+                  <div>
+                    <span className="text-[9px] text-slate-450 uppercase block">Promoter promoter name</span>
+                    <strong className="text-slate-800 dark:text-slate-200">{merchant.ownerName}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-slate-450 uppercase block">Registered contact</span>
+                    <strong className="text-slate-800 dark:text-slate-200">+91 {merchant.mobile}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-slate-450 uppercase block">Business billing email</span>
+                    <strong className="text-slate-800 dark:text-slate-200 underline">{merchant.email}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-slate-450 uppercase block">IFSC code node</span>
+                    <strong className="text-slate-800 dark:text-slate-200 font-mono uppercase">{merchant.ifscCode}</strong>
+                  </div>
+                </div>
+
+                <div className="h-px bg-slate-100 dark:bg-slate-900" />
+
+                <div className="p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/10 text-[9px] text-slate-450 leading-relaxed flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-indigo-500 shrink-0" />
+                  <span>Settlements route standardly within NPCI rules. Write directly to <strong className="font-black text-slate-700 dark:text-zinc-200">support@aaravpay.com</strong> with questions.</span>
+                </div>
+              </div>
+
             </div>
 
           </div>
+
         </div>
       )}
 

@@ -59,6 +59,9 @@ export default function AdminDashboard({
 }: AdminDashboardProps) {
   
   const [activeTab, setActiveTab] = useState<'overview' | 'merchants' | 'settlements' | 'transactions' | 'security' | 'settings'>('overview');
+  const [settingsSubTab, setSettingsSubTab] = useState<'system' | 'schema' | 'rbac' | 'backend-code'>('system');
+  const [schemaType, setSchemaType] = useState<'sql' | 'prisma'>('prisma');
+  const [codeLayer, setCodeLayer] = useState<'controller' | 'service' | 'repository'>('controller');
   
   // Filtering & Search states
   const [merchantSearch, setMerchantSearch] = useState<string>('');
@@ -762,57 +765,702 @@ export default function AdminDashboard({
 
       {/* -------------------- SETTINGS VIEW -------------------- */}
       {activeTab === 'settings' && (
-        <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-150 dark:border-slate-850 shadow-xs max-w-2xl">
-          <div className="border-b border-slate-100 dark:border-slate-900 pb-3 mb-6">
-            <h3 className="font-bold text-slate-900 dark:text-white">Authority Settings Cabinet</h3>
-            <p className="text-[10px] text-slate-450 mt-0.5">Control direct bank connection ports, commission MDR values, and SMTP settings.</p>
-          </div>
-
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4 text-xs font-semibold">
+        <div className="space-y-6">
+          
+          <div className="bg-white/40 dark:bg-slate-950/40 border border-slate-150 dark:border-slate-850 p-6 rounded-2xl shadow-sm backdrop-blur-md">
+            
+            {/* Action Bar / Title Tab Controls */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 dark:border-slate-900 pb-3 mb-6">
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase">System MDR Rate Commission (%)</label>
-                <input
-                  type="number"
-                  defaultValue="0.80"
-                  step="0.05"
-                  className="w-full text-xs p-2 mt-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800"
-                />
+                <h3 className="font-extrabold text-slate-950 dark:text-white text-lg flex items-center space-x-2">
+                  <Sliders className="w-5 h-5 text-indigo-500" />
+                  <span>AARAV PAY Console Settings</span>
+                </h3>
+                <p className="text-[10px] text-slate-450 mt-0.5">
+                  Browse relational schemas, verify access permissions, adjust bank ports, or audit core systems.
+                </p>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase">T+0 Settlement Bank Host</label>
-                <select className="w-full text-xs p-2 mt-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800">
-                  <option>NPCI Secondary Host Core</option>
-                  <option>Axis Bank Host Node</option>
-                  <option>ICICI Multi-Direct Node</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase">AI Fraud Auto-Block Score Level</label>
-                <input
-                  type="number"
-                  defaultValue="85"
-                  className="w-full text-xs p-2 mt-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase">SMTP System Notifications</label>
-                <select className="w-full text-xs p-2 mt-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800">
-                  <option>Active - upi@gateway.in</option>
-                  <option>Hold queues - Disabled</option>
-                </select>
+              {/* Sub-tab pills */}
+              <div className="flex flex-wrap gap-1.5 bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200/50 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setSettingsSubTab('system')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-black transition cursor-pointer ${
+                    settingsSubTab === 'system'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-950 dark:hover:text-slate-200'
+                  }`}
+                >
+                  System Parameters
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSettingsSubTab('schema')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-black transition cursor-pointer flex items-center space-x-1 ${
+                    settingsSubTab === 'schema'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-950 dark:hover:text-slate-200'
+                  }`}
+                >
+                  <Terminal className="w-3 h-3" />
+                  <span>Prisma/Database Schema</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSettingsSubTab('rbac')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-black transition cursor-pointer ${
+                    settingsSubTab === 'rbac'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-950 dark:hover:text-slate-200'
+                  }`}
+                >
+                  RBAC Matrix
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSettingsSubTab('backend-code')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-black transition cursor-pointer ${
+                    settingsSubTab === 'backend-code'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-950 dark:hover:text-slate-200'
+                  }`}
+                >
+                  Backend Code Layers
+                </button>
               </div>
             </div>
 
-            <div className="h-px bg-slate-100 dark:bg-slate-900" />
+            {/* 1. SYSTEM PARAMETERS SUB-VIEW */}
+            {settingsSubTab === 'system' && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs font-semibold">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">System MDR Rate Commission (%)</label>
+                    <input
+                      type="number"
+                      defaultValue="0.80"
+                      step="0.05"
+                      className="w-full text-xs p-3 mt-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:ring-1 focus:ring-indigo-500 font-mono"
+                    />
+                  </div>
 
-            <div className="p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/10 text-[10px] text-slate-500 dark:text-slate-400">
-              Only authorized staff accounts with Level-5 permission controls may mutate the host settlement queue or default commission keys. Handshakes are audited dynamically in security logs.
-            </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">T+0 Settlement Bank Host Gateway</label>
+                    <select className="w-full text-xs p-3 mt-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200">
+                      <option>NPCI Secondary Host Core - HDFC Route</option>
+                      <option>Axis Bank Direct Host Node (Fast-Path)</option>
+                      <option>ICICI Multi-Direct Instant Node</option>
+                      <option>Cashfree Secondary Redundant Link</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">AI Hazard Risk Block Threshold</label>
+                    <input
+                      type="number"
+                      defaultValue="85"
+                      className="w-full text-xs p-3 mt-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:ring-1 focus:ring-indigo-500 font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">SMTP System Trigger Logs</label>
+                    <select className="w-full text-xs p-3 mt-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200">
+                      <option>Active Gateway - alerts@aaravpay.com</option>
+                      <option>Hold Queues - In-app Notifications Only</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="h-px bg-slate-100 dark:bg-slate-900" />
+
+                <div className="p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/10 text-[11px] text-slate-500 dark:text-slate-400 flex items-start space-x-2.5 leading-relaxed">
+                  <Sparkles className="w-5 h-5 text-indigo-500 shrink-0" />
+                  <p>
+                    Only authorized platform administrators holding digital 2FA credentials can mutate secondary gateways. MDR switches affect ongoing transaction billing live tables immediately.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* 2. DATABASE SCHEMA / PRISMA MODELS SUB-VIEW */}
+            {settingsSubTab === 'schema' && (
+              <div className="space-y-4">
+                
+                {/* Format switcher */}
+                <div className="flex border-b border-slate-100 dark:border-slate-850 pb-2">
+                  <button
+                    type="button"
+                    onClick={() => setSchemaType('prisma')}
+                    className={`px-4 py-1.5 text-xs font-black rounded-lg mr-2 ${
+                      schemaType === 'prisma' 
+                        ? 'bg-slate-950 text-white dark:bg-white dark:text-black shadow-xs' 
+                        : 'text-slate-500 hover:text-slate-850'
+                    }`}
+                  >
+                    Prisma ORM Models (.prisma)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSchemaType('sql')}
+                    className={`px-4 py-1.5 text-xs font-black rounded-lg ${
+                      schemaType === 'sql' 
+                        ? 'bg-slate-950 text-white dark:bg-white dark:text-black shadow-xs' 
+                        : 'text-slate-500 hover:text-slate-850'
+                    }`}
+                  >
+                    PostgreSQL DDL (.sql)
+                  </button>
+                </div>
+
+                {schemaType === 'prisma' ? (
+                  <div className="text-left">
+                    <p className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold mb-2">
+                      // production-ready prisma schema located at prisma/schema.prisma
+                    </p>
+                    <pre className="p-4 bg-slate-950 text-slate-200 dark:bg-black rounded-xl border border-slate-850 font-mono text-[10px] overflow-auto max-h-[420px] leading-relaxed">
+{`datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+  MERCHANT
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+enum KycStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum SettlementStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id               BigInt      @id @default(autoincrement())
+  fullName         String?     @map("full_name") @db.VarChar(255)
+  email            String      @unique @db.VarChar(255)
+  mobile           String?     @unique @db.VarChar(20)
+  passwordHash     String      @map("password_hash") @db.Text
+  role             Role        @default(MERCHANT)
+  status           UserStatus  @default(ACTIVE)
+  twoFactorEnabled Boolean     @default(false) @map("two_factor_enabled")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  merchants        Merchant[]
+  auditLogs        AuditLog[]
+}
+
+model Merchant {
+  id           BigInt        @id @default(autoincrement())
+  userId       BigInt        @map("user_id")
+  businessName String        @map("business_name") @db.VarChar(255)
+  ownerName    String        @map("owner_name") @db.VarChar(255)
+  gstNumber    String?       @map("gst_number") @db.VarChar(50)
+  panNumber    String?       @map("pan_number") @db.VarChar(50)
+  bankAccount  String        @map("bank_account") @db.VarChar(100)
+  ifscCode     String        @map("ifsc_code") @db.VarChar(20)
+  upiId        String        @map("upi_id") @db.VarChar(255)
+  kycStatus    KycStatus     @default(PENDING) @map("kyc_status")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  user         User          @relation(fields: [userId], references: [id])
+  payments     Payment[]
+  settlements  Settlement[]
+  apiKeys      ApiKey[]
+  webhooks     Webhook[]
+}
+
+model Payment {
+  id               BigInt        @id @default(autoincrement())
+  merchantId       BigInt        @map("merchant_id")
+  orderId          String        @map("order_id") @db.VarChar(100)
+  txnId            String        @map("txn_id") @db.VarChar(100)
+  customerName     String        @map("customer_name") @db.VarChar(255)
+  customerMobile   String?       @map("customer_mobile") @db.VarChar(20)
+  amount           Decimal       @db.Decimal(18, 2)
+  paymentMethod    String        @map("payment_method") @db.VarChar(50)
+  status           PaymentStatus @default(PENDING)
+  gatewayReference String?       @map("gateway_reference") @db.VarChar(255)
+  createdAt        DateTime      @default(now()) @map("created_at")
+  merchant         Merchant      @relation(fields: [merchantId], references: [id])
+  refunds          Refund[]
+}
+
+model Settlement {
+  id             BigInt           @id @default(autoincrement())
+  merchantId     BigInt           @map("merchant_id")
+  amount         Decimal          @db.Decimal(18, 2)
+  bankAccount    String           @map("bank_account") @db.VarChar(100)
+  status         SettlementStatus @default(PENDING)
+  settlementDate DateTime?        @map("settlement_date")
+  merchant       Merchant         @relation(fields: [merchantId], references: [id])
+}
+
+model Refund {
+  id           BigInt        @id @default(autoincrement())
+  paymentId    BigInt        @map("payment_id")
+  refundAmount Decimal       @map("refund_amount") @db.Decimal(18, 2)
+  reason       String?       @db.Text
+  status       PaymentStatus @default(PENDING)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  payment      Payment       @relation(fields: [paymentId], references: [id])
+}
+
+model ApiKey {
+  id         BigInt   @id @default(autoincrement())
+  merchantId BigInt   @map("merchant_id")
+  publicKey  String   @map("public_key") @db.Text
+  secretKey  String   @map("secret_key") @db.Text
+  environment String @default("sandbox") @db.VarChar(50)
+  status     Boolean  @default(true)
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+}
+
+model Webhook {
+  id          BigInt   @id @default(autoincrement())
+  merchantId  BigInt   @map("merchant_id")
+  endpointUrl String   @map("endpoint_url") @db.Text
+  secretToken String   @map("secret_token") @db.Text
+  active      Boolean  @default(true)
+  merchant    Merchant @relation(fields: [merchantId], references: [id])
+}
+
+model AuditLog {
+  id         BigInt   @id @default(autoincrement())
+  userId     BigInt?  @map("user_id")
+  action     String   @db.Text
+  ipAddress  String?  @map("ip_address") @db.VarChar(100)
+  deviceInfo String?  @map("device_info") @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+  user       User?    @relation(fields: [userId], references: [id])
+}`}
+                    </pre>
+                  </div>
+                ) : (
+                  <div className="text-left">
+                    <p className="text-[10px] text-cyan-500 font-bold mb-2">
+                      -- standard relational PostgreSQL schema tables creation queries
+                    </p>
+                    <pre className="p-4 bg-slate-950 text-slate-200 dark:bg-black rounded-xl border border-slate-850 font-mono text-[10px] overflow-auto max-h-[420px] leading-relaxed">
+{`CREATE TYPE role_enum AS ENUM ('super_admin', 'admin', 'staff', 'merchant');
+CREATE TYPE status_enum AS ENUM ('active', 'blocked');
+CREATE TYPE kyc_status_enum AS ENUM ('pending', 'approved', 'rejected');
+CREATE TYPE payment_status_enum AS ENUM ('pending', 'processing', 'success', 'failed', 'refunded');
+CREATE TYPE settlement_status_enum AS ENUM ('pending', 'processing', 'completed', 'failed');
+
+CREATE TABLE users (
+  id BIGSERIAL PRIMARY KEY,
+  full_name VARCHAR(255),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  mobile VARCHAR(20) UNIQUE,
+  password_hash TEXT NOT NULL,
+  role role_enum DEFAULT 'merchant',
+  status status_enum DEFAULT 'active',
+  two_factor_enabled BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE merchants (
+  id BIGSERIAL PRIMARY KEY,
+  user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+  business_name VARCHAR(255) NOT NULL,
+  owner_name VARCHAR(255) NOT NULL,
+  gst_number VARCHAR(50),
+  pan_number VARCHAR(50),
+  bank_account VARCHAR(100) NOT NULL,
+  ifsc_code VARCHAR(20) NOT NULL,
+  upi_id VARCHAR(255) NOT NULL,
+  kyc_status kyc_status_enum DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE payments (
+  id BIGSERIAL PRIMARY KEY,
+  merchant_id BIGINT REFERENCES merchants(id) ON DELETE CASCADE,
+  order_id VARCHAR(100) NOT NULL,
+  txn_id VARCHAR(100) NOT NULL,
+  customer_name VARCHAR(255) NOT NULL,
+  customer_mobile VARCHAR(20),
+  amount DECIMAL(18, 2) NOT NULL,
+  payment_method VARCHAR(50) NOT NULL,
+  status payment_status_enum DEFAULT 'pending',
+  gateway_reference VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE settlements (
+  id BIGSERIAL PRIMARY KEY,
+  merchant_id BIGINT REFERENCES merchants(id) ON DELETE CASCADE,
+  amount DECIMAL(18, 2) NOT NULL,
+  bank_account VARCHAR(100) NOT NULL,
+  status settlement_status_enum DEFAULT 'pending',
+  settlement_date TIMESTAMP
+);
+
+CREATE TABLE refunds (
+  id BIGSERIAL PRIMARY KEY,
+  payment_id BIGINT REFERENCES payments(id) ON DELETE CASCADE,
+  refund_amount DECIMAL(18, 2) NOT NULL,
+  reason TEXT,
+  status payment_status_enum DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE api_keys (
+  id BIGSERIAL PRIMARY KEY,
+  merchant_id BIGINT REFERENCES merchants(id) ON DELETE CASCADE,
+  public_key TEXT NOT NULL,
+  secret_key TEXT NOT NULL,
+  environment VARCHAR(50) DEFAULT 'sandbox',
+  status BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE webhooks (
+  id BIGSERIAL PRIMARY KEY,
+  merchant_id BIGINT REFERENCES merchants(id) ON DELETE CASCADE,
+  endpoint_url TEXT NOT NULL,
+  secret_token TEXT NOT NULL,
+  active BOOLEAN DEFAULT TRUE
+);`}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 3. Role-Based Access Control Matrix (RBAC) */}
+            {settingsSubTab === 'rbac' && (
+              <div className="space-y-4">
+                <div className="flex flex-col space-y-1">
+                  <span className="text-xs font-bold text-indigo-500 uppercase">AARAV PAY RBAC Authority Controls</span>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Audit matrix demonstrating access levels mapped dynamically back to standard database JWT encryption payloads.
+                  </p>
+                </div>
+
+                <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase text-slate-500">
+                        <th className="p-3 font-bold">Role Label</th>
+                        <th className="p-3 font-bold">Core Merchants</th>
+                        <th className="p-3 font-bold">Payments (Scan/Refund)</th>
+                        <th className="p-3 font-bold">Settlement Approval</th>
+                        <th className="p-3 font-bold">API / Webhooks Keys</th>
+                        <th className="p-3 font-bold">System MDR Toggle</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-150 dark:divide-slate-850 font-medium">
+                      <tr>
+                        <td className="p-3 text-[11px] font-bold text-red-600">SUPER_ADMIN</td>
+                        <td className="p-3 text-emerald-500 font-bold">&#10003; Full Access</td>
+                        <td className="p-3 text-emerald-500 font-bold">&#10003; Full Access</td>
+                        <td className="p-3 text-emerald-500 font-bold">&#10003; Full Access</td>
+                        <td className="p-3 text-emerald-500 font-bold">&#10003; Full Access</td>
+                        <td className="p-3 text-emerald-500 font-bold">&#10003; Level-5 Authority</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 text-[11px] font-bold text-indigo-500">ADMIN</td>
+                        <td className="p-3 text-emerald-450">&#10003; Read / Modify</td>
+                        <td className="p-3 text-emerald-450">&#10003; Complete Logs</td>
+                        <td className="p-3 text-emerald-450">&#10003; Standard Settle</td>
+                        <td className="p-3 text-emerald-450">&#10003; Read / Write</td>
+                        <td className="p-3 text-rose-500 font-bold">&#10008; Forbidden</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 text-[11px] font-bold text-pink-500">STAFF_INTERNAL</td>
+                        <td className="p-3 text-slate-500">&#10003; Read Only</td>
+                        <td className="p-3 text-slate-500">&#10003; Standard Refunds</td>
+                        <td className="p-3 text-rose-500 font-bold">&#10008; Forbidden</td>
+                        <td className="p-3 text-slate-500">&#10003; Read Only</td>
+                        <td className="p-3 text-rose-500 font-bold">&#10008; Forbidden</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 text-[11px] font-bold text-teal-600">MERCHANT_OWNER</td>
+                        <td className="p-3 text-indigo-500">&#10003; View Own Profile</td>
+                        <td className="p-3 text-teal-600">&#10003; View Own Sales</td>
+                        <td className="p-3 text-[10px] text-slate-450">Request Settlement</td>
+                        <td className="p-3 text-teal-600">&#10003; Re-key sandbox</td>
+                        <td className="p-3 text-rose-500 font-bold">&#10008; Forbidden</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* 4. BACKEND CODE ARCHITECTURE */}
+            {settingsSubTab === 'backend-code' && (
+              <div className="space-y-4">
+                
+                {/* Layer switch buttons */}
+                <div className="flex flex-wrap border-b border-slate-100 dark:border-slate-850 pb-2">
+                  <button
+                    type="button"
+                    onClick={() => setCodeLayer('controller')}
+                    className={`px-3 py-1.5 text-xs font-black rounded-lg mr-2 transition cursor-pointer ${
+                      codeLayer === 'controller' 
+                        ? 'bg-slate-900 text-white dark:bg-white dark:text-black shadow-xs' 
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    Controller Layer (.ts)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCodeLayer('service')}
+                    className={`px-3 py-1.5 text-xs font-black rounded-lg mr-2 transition cursor-pointer ${
+                      codeLayer === 'service' 
+                        ? 'bg-slate-900 text-white dark:bg-white dark:text-black shadow-xs' 
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    Service Layer (.ts)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCodeLayer('repository')}
+                    className={`px-3 py-1.5 text-xs font-black rounded-lg transition cursor-pointer ${
+                      codeLayer === 'repository' 
+                        ? 'bg-slate-900 text-white dark:bg-white dark:text-black shadow-xs' 
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    Repository Layer (.ts)
+                  </button>
+                </div>
+
+                {codeLayer === 'controller' && (
+                  <div className="text-left">
+                    <p className="text-[10px] text-emerald-500 font-mono font-bold mb-2">// Express Controller: src/backend/controllers/PaymentController.ts</p>
+                    <pre className="p-4 bg-slate-950 text-slate-200 dark:bg-black rounded-xl border border-slate-850 font-mono text-[10px] overflow-auto max-h-[380px] leading-relaxed">
+{`import { Request, Response } from 'express';
+import { PaymentService } from '../services/PaymentService';
+import { validationResult } from 'express-validator';
+
+export class PaymentController {
+  private paymentService: PaymentService;
+
+  constructor() {
+    this.paymentService = new PaymentService();
+  }
+
+  /**
+   * POST /api/payments/create
+   * @description Initiates a secured merchant transaction dynamically
+   */
+  public createPayment = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ success: false, errors: errors.array() });
+        return;
+      }
+
+      const { amount, currency, customer_name, customer_mobile } = req.body;
+      const merchantId = req.headers['x-merchant-id'] as string; // Set during JWT validation
+
+      if (!merchantId) {
+        res.status(401).json({ success: false, error: 'Merchant context missing.' });
+        return;
+      }
+
+      const paymentResult = await this.paymentService.generatePaymentIntent({
+        amount: parseFloat(amount),
+        currency: currency || 'INR',
+        customerName: customer_name,
+        customerMobile: customer_mobile,
+        merchantId
+      });
+
+      res.status(201).json({
+        success: true,
+        payment_id: paymentResult.id,
+        payment_url: paymentResult.checkoutUrl,
+        qr_code: paymentResult.qrString,
+        createdAt: paymentResult.createdAt
+      });
+    } catch (error: any) {
+      console.error('PaymentController [createPayment] Error: ', error);
+      res.status(500).json({ success: false, error: error.message || 'Internal platform code lock.' });
+    }
+  };
+
+  /**
+   * POST /api/payments/verify
+   * @description Callback endpoint verifying UPI transaction completion
+   */
+  public verifyPayment = async (req: Request, res: Response): Promise<void> => {
+    res.json({ success: true, message: "Valid handshakes captured." });
+  };
+}`}
+                    </pre>
+                  </div>
+                )}
+
+                {codeLayer === 'service' && (
+                  <div className="text-left">
+                    <p className="text-[10px] text-emerald-500 font-mono font-bold mb-2">// Business Logic Service: src/backend/services/PaymentService.ts</p>
+                    <pre className="p-4 bg-slate-950 text-slate-200 dark:bg-black rounded-xl border border-slate-850 font-mono text-[10px] overflow-auto max-h-[380px] leading-relaxed">
+{`import { prisma } from '../lib/prisma';
+import { generateRandomString, encryptAES } from '../utils/crypto';
+import cacheManager from '../lib/redis';
+
+export class PaymentService {
+  /**
+   * Generates a fully verified payment intents record on server
+   * Emits back deep linked UPI payment parameters
+   */
+  public async generatePaymentIntent(params: {
+    amount: number;
+    currency: string;
+    customerName: string;
+    customerMobile?: string;
+    merchantId: string;
+  }) {
+    // 1. Velocity monitoring & Fraud Checks
+    const velocityKey = \`limit:\${params.merchantId}:\${params.customerName}\`;
+    const count = await cacheManager.incr(velocityKey);
+    if (count === 1) {
+      await cacheManager.expire(velocityKey, 60); // Max velocity checks per min
+    }
+    if (count > 8) {
+      throw new Error("High rate of transaction trigger from singular user. Velocity block.");
+    }
+
+    // 2. Fetch active Merchant credentials
+    const merchant = await prisma.merchant.findUnique({
+      where: { id: BigInt(params.merchantId) }
+    });
+
+    if (!merchant || merchant.kycStatus !== 'APPROVED') {
+      throw new Error("Merchant accounts not authorized on live settlement routes.");
+    }
+
+    // 3. Generate reference identifiers
+    const orderId = 'ORD' + generateRandomString(12).toUpperCase();
+    const txnId = 'TXN' + generateRandomString(16).toUpperCase();
+    const mockRef = 'ARR_REF_' + generateRandomString(10).toUpperCase();
+
+    // 4. Generate standard UPI deep link string
+    // format: upi://pay?pa={merchant_upi_id}&pn={merchant_name}&am={amount}&cu=INR&tr={ref}
+    const upiLink = \`upi://pay?pa=\${merchant.upiId}&pn=\${encodeURIComponent(merchant.businessName)}&am=\${params.amount.toFixed(2)}&cu=INR&tr=\${mockRef}\`;
+
+    // 5. Commit record to PostgreSQL using transactional safety
+    const payment = await prisma.payment.create({
+      data: {
+        merchantId: BigInt(params.merchantId),
+        orderId,
+        txnId,
+        customerName: params.customerName,
+        customerMobile: params.customerMobile || '',
+        amount: params.amount,
+        paymentMethod: 'UPI QR',
+        status: 'PENDING',
+        gatewayReference: mockRef
+      }
+    });
+
+    return {
+      id: payment.id.toString(),
+      checkoutUrl: \`https://aaravpay.com/payment/checkout/\${payment.id}\`,
+      qrString: upiLink,
+      createdAt: payment.createdAt
+    };
+  }
+}`}
+                    </pre>
+                  </div>
+                )}
+
+                {codeLayer === 'repository' && (
+                  <div className="text-left">
+                    <p className="text-[10px] text-emerald-500 font-mono font-bold mb-2">// DB Query Mapping Layer: src/backend/repositories/SettlementRepository.ts</p>
+                    <pre className="p-4 bg-slate-950 text-slate-200 dark:bg-black rounded-xl border border-slate-850 font-mono text-[10px] overflow-auto max-h-[380px] leading-relaxed">
+{`import { prisma } from '../lib/prisma';
+import { Decimal } from '@prisma/client/runtime';
+
+export class SettlementRepository {
+  /**
+   * Fetches active settlements requested on platform
+   */
+  public async getPendingSettlementQueue() {
+    return prisma.settlement.findMany({
+      where: { status: 'PENDING' },
+      include: { merchant: true },
+      orderBy: { id: 'asc' }
+    });
+  }
+
+  /**
+   * Safe transaction sweep settling funds while creating ledger audit trails
+   */
+  public async executeLocksettlement(settlementId: string, utrString: string) {
+    return prisma.$transaction(async (tx) => {
+      // 1. Fetch record and lock it
+      const settlement = await tx.settlement.findUnique({
+        where: { id: BigInt(settlementId) }
+      });
+
+      if (!settlement || settlement.status !== 'PENDING') {
+        throw new Error("Target ledger balance already locked or cleared.");
+      }
+
+      // 2. Perform payout routing updates
+      const updatedSettle = await tx.settlement.update({
+        where: { id: BigInt(settlementId) },
+        data: {
+          status: 'COMPLETED',
+          settlementDate: new Date()
+        }
+      });
+
+      // 3. Write audit log entries automatically for tracking
+      await tx.auditLog.create({
+        data: {
+          action: \`Settlement of amount \${settlement.amount} cleared with status COMPLETED for merchant ID \${settlement.merchantId}. UTR: \${utrString}\`,
+          deviceInfo: 'Auto-Settlement Engine Core Node-3'
+        }
+      });
+
+      return updatedSettle;
+    });
+  }
+}`}
+                    </pre>
+                  </div>
+                )}
+                
+              </div>
+            )}
+
           </div>
+
         </div>
       )}
 

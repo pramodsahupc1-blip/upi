@@ -16,6 +16,13 @@ export interface Merchant {
   createdAt: string;
   kycSubmitted: boolean;
   kycApprovedAt: string | null;
+  // SaaS Blueprint additions
+  plan?: 'Starter' | 'Business' | 'Enterprise';
+  selectedProvider?: 'Razorpay' | 'Cashfree' | 'PhonePe' | 'Paytm' | 'None';
+  twoFactorEnabled?: boolean;
+  panVerified?: boolean;
+  gstVerified?: boolean;
+  bankVerified?: boolean;
 }
 
 export interface Transaction {

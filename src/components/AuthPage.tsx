@@ -63,7 +63,8 @@ export default function AuthPage({ merchants, onLogin, onNavigate }: AuthPagePro
 
     setTimeout(() => {
       // 1. Check Admin Profile
-      if (formData.email.toLowerCase() === 'admin@upigateway.in' && formData.password === 'admin123') {
+      const emailLower = formData.email.toLowerCase();
+      if ((emailLower === 'admin@aaravpay.com') && formData.password === 'admin123') {
         setIsAuthenticating(false);
         setShowTwoFactor(true); // Trigger 2FA step for Admin
         return;
@@ -158,7 +159,7 @@ export default function AuthPage({ merchants, onLogin, onNavigate }: AuthPagePro
     setOtpSent(false);
     if (type === 'admin') {
       setFormData({
-        email: 'admin@upigateway.in',
+        email: 'admin@aaravpay.com',
         password: 'admin123',
         mobile: '',
         otp: '',

@@ -6,27 +6,30 @@ import './index.css';
 // Global guard for iframe ResizeObserver loop and cross-origin HMR script exceptions
 if (typeof window !== 'undefined') {
   const resizeObserverErr = (e: ErrorEvent) => {
-    const msg = e.message || '';
-    if (
-      msg === 'ResizeObserver loop limit exceeded' ||
-      msg === 'ResizeObserver loop completed with undeliverable notifications' ||
-      msg.includes('ResizeObserver') ||
-      msg.includes('Script error') ||
-      msg === 'Script error.'
-    ) {
-      e.stopImmediatePropagation();
-      e.preventDefault();
-    }
+    try {
+      const msg = typeof (e?.message) === 'string' ? e.message : (e?.error && typeof e.error.message === 'string' ? e.error.message : '');
+      if (
+        !msg ||
+        msg.includes('ResizeObserver') ||
+        msg.includes('Script error') ||
+        msg === 'Script error.'
+      ) {
+        if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+        if (e && e.preventDefault) e.preventDefault();
+      }
+    } catch (err) {}
   };
   window.addEventListener('error', resizeObserverErr);
 
   // Handle unhandled rejections for the same
   window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
-    const reason = e.reason && e.reason.message;
-    if (reason && (reason.includes('ResizeObserver') || reason.includes('ResizeObserver loop'))) {
-      e.stopImmediatePropagation();
-      e.preventDefault();
-    }
+    try {
+      const reason = e.reason && (e.reason.message || e.reason);
+      if (typeof reason === 'string' && (reason.includes('ResizeObserver') || reason.includes('Script error') || reason.includes('Script error.'))) {
+        if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+        if (e && e.preventDefault) e.preventDefault();
+      }
+    } catch (err) {}
   });
 }
 
