@@ -1,0 +1,6 @@
+{
+  "name": "UPI Payment Gateway & Admin Panel",
+  "description": "A modern, high-fidelity UPI payment gateway with merchant onboarding, live payment simulation, automated settlement processing, and an administrative control center.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
